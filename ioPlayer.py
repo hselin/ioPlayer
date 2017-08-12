@@ -84,7 +84,7 @@ def runTrace(fd, trace, disk, results):
 		#results['Latencies'].loc[len(results['Latencies'])]=latencyResult
 
 def openDevice(path):
-	fd = os.open(path, os.O_RDWR)
+	fd = os.open(path, os.O_RDWR|os.O_SYNC)
 	assert(fd >= 1)
 	return fd
 
