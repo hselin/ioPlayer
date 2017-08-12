@@ -71,7 +71,7 @@ DriverCompletionRoutine,  TimeStamp,             IrpPtr,   UniqueId,            
          FileNameDelete,  TimeStamp,         FileObject, FileName
         FileNameRundown,  TimeStamp,         FileObject, FileName
 EndHeader
-               DiskRead,     260959, p0 (2004),       9700, 0xfffffadf39860010, 0x13690de000, 0x00002000,        3738,        4, 0x000901,        3738,       0,  Unknown, 0xfffffadf3b71e8f0, "Disk8:\s0\s1\s2"
+               DiskFlush,     260959, p0 (2004),       9700, 0xfffffadf39860010, , ,        3738,        4, 0x000901,        3738,       0,  Unknown, 0xfffffadf3b71e8f0, "Disk8:\s0\s1\s2"
                DiskRead,     261233, p0 (2004),       3348, 0xfffffadf3b9ca010, 0x0ea84e4000, 0x00002000,        3788,        4, 0x000901,         273,       0,  Unknown, 0xfffffadf3bde8ab0, "Disk8:\s0\s1\s3"
                DiskRead,     263262, p0 (2004),       7812, 0xfffffadf39c0a930, 0x223b8ee000, 0x00002000,        7571,        5, 0x000901,        7571,       0,  Unknown, 0xfffffadf3ada5d20, "Disk9:\s4\s5\s6"
                DiskRead,     264162, p0 (2004),       4668, 0xfffffadf3918b010, 0x14b59d4000, 0x00002000,        4126,        5, 0x000901,         899,       0,  Unknown, 0xfffffadf3b1603f0, "Disk9:\s4\s5\s7"

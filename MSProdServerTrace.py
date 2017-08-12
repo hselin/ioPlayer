@@ -25,19 +25,22 @@ class MSProdServerTrace(Trace):
 
         df['Op'] = df['Op'].str.strip().replace('DiskRead', 'Read')
         df['Op'] = df['Op'].str.strip().replace('DiskWrite', 'Write')
+        df['Op'] = df['Op'].str.strip().replace('DiskFlush', 'Flush')
 
         df = df[pandas.notnull(df['Time'])]
-        df = df[pandas.notnull(df['Offset'])]
-        df = df[pandas.notnull(df['Size'])]
-        df = df[pandas.notnull(df['Disk'])]
+        #df = df[pandas.notnull(df['Offset'])]
+        #df = df[pandas.notnull(df['Size'])]
+        #df = df[pandas.notnull(df['Disk'])]
         df = df[df['Time'].str.strip()!='TimeStamp']
         
-        opList = ['Read', 'Write']
+        opList = ['Read', 'Write', 'Flush']
         df = df[df.Op.isin(opList)]
 
         df['Time'] = df['Time'].apply(lambda x: int(x))
-        df['Offset'] = df['Offset'].apply(lambda x: int(x, 16) / 512)
-        df['Size'] = df['Size'].apply(lambda x: int(x, 16) / 512)
+        df['Offset'] = df['Offset'].apply(lambda x: 0 if x==' ' else (int(x, 16) / 512))
+        df['Size'] = df['Size'].apply(lambda x: 0 if x==' ' else (int(x, 16) / 512))
+        #df['Offset'] = df['Offset'].apply(lambda x: int(x, 16) / 512)
+        #df['Size'] = df['Size'].apply(lambda x: int(x, 16) / 512)
         df['Disk'] = df['Disk'].apply(lambda x: int(x))
         df['End'] = df['Offset'] + df['Size'] - 1
 
@@ -54,6 +57,8 @@ class MSProdServerTrace(Trace):
 
         self.endTime = df['Time'].max() + timeOffset
         self.startTime = df['Time'].min() + timeOffset
+
+        print(df)
 
     def reset(self):
         self.ios = {}
