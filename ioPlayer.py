@@ -27,18 +27,32 @@ def bytesToBlock(val):
 def blockToBytes(val):
 	return math.ceil(val * 512)
 
-def writeToDevice(fd, offset, size):
+def writeToDevice(fd, offset, amountToWrite):
+	orgBuf = bytearray(amountToWrite)
+
 	startTime = datetime.datetime.now()
-	val = os.pwrite(fd, bytearray(size), offset)
+
+	while(amountToWrite > 0):
+		idx = -1 * amountToWrite
+		val = os.pwrite(fd, orgBuf[idx:], offset)
+		assert(amountToWrite >= val)
+		amountToWrite -= val
+
 	delta = datetime.datetime.now() - startTime
-	assert(size == val)
 	return getMS(delta)
 
-def readFromDevice(fd, offset, size):
+def readFromDevice(fd, offset, amountToRead):
+	orgBuf = bytearray(amountToRead)
+
 	startTime = datetime.datetime.now()
-	val = os.pread(fd, size, offset)
+	
+	while(amountToRead > 0):
+		val = os.pread(fd, amountToRead, offset)
+		assert(amountToRead >= len(val))
+		amountToRead -= len(val)
+
 	delta = datetime.datetime.now() - startTime
-	assert(size == len(val))
+
 	return getMS(delta)
 
 def getMS(td):
@@ -59,11 +73,9 @@ def runTrace(fd, trace, disk, results):
 
 		if(op == 'Read'):
 			latency = readFromDevice(fd, offset, size)
-			#results['Latencies'].append((offset, latency))
 
 		if(op == 'Write'):
 			latency = writeToDevice(fd, offset, size)
-			#results['Latencies'].append((offset, latency))
 
 		latencyResult = [bytesToBlock(offset), bytesToBlock(size), latency]
 		df = pandas.DataFrame([latencyResult], columns=['Offset', 'Size', 'Latency'])
