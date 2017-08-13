@@ -9,7 +9,7 @@ import argparse
 
 
 from MSProdServerTrace import MSProdServerTrace
-from plot import plotLatencies
+from plot import plotLatencies3D
 
 
 #CONST
@@ -22,6 +22,7 @@ DEFAULT_DEV_PATH = '/dev/zero'
 DEFAULT_DEV_SIZE = 8 * GB
 DEFAULT_DISK_INDEX = 1
 DEFAULT_TRACE_FILE_PATH = './traces/MSNStorageFileServer-sample.csv'
+DEFAULT_RECORD_NAME = 'out.csv'
 
 def bytesToBlock(val):
 	return math.ceil(val / 512)
@@ -121,8 +122,8 @@ def runTrace(fd, devSize, trace, disk, timeCompression, results):
 		elif(op == 'Flush'):
 			latency = flushDevice(fd)
 
-		latencyResult = [bytesToBlock(offset), bytesToBlock(size), latency]
-		df = pandas.DataFrame([latencyResult], columns=['Offset', 'Size', 'Latency'])
+		latencyResult = [op, bytesToBlock(offset), bytesToBlock(size), latency]
+		df = pandas.DataFrame([latencyResult], columns=['Op', 'Offset', 'Size', 'Latency'])
 		results['Latencies'] = results['Latencies'].append(df, ignore_index=True)
 
 
@@ -143,6 +144,10 @@ class MyParser(argparse.ArgumentParser):
 		sys.exit(2)
 
 
+def saveLatencyResults(fileName, results):
+	with open(fileName, 'a') as f:
+		results['Latencies'].to_csv(f, sep=',', header=False, index=False)
+
 if __name__ == '__main__':
 	parser = MyParser()
 	parser.add_argument("-d", "--devPath", help="device path", type=str, default=DEFAULT_DEV_PATH, required=False)
@@ -151,6 +156,7 @@ if __name__ == '__main__':
 	parser.add_argument("-i", "--diskIndex", help="disk index", type=int, default=DEFAULT_DISK_INDEX, required=False)
 	parser.add_argument("-tf", "--traceFilePath", help="trace file path", type=str, default=DEFAULT_TRACE_FILE_PATH, required=False)
 	parser.add_argument("-p", "--plotData", help="plot resulting data", action='store_true', required=False)
+	parser.add_argument("-r", "--recordName", help="record name", type=str, default=DEFAULT_RECORD_NAME, required=False)
 	
 	args = parser.parse_args()
 
@@ -160,6 +166,7 @@ if __name__ == '__main__':
 	print('diskIndex:', args.diskIndex)
 	print('traceFilePath:', args.traceFilePath)
 	print('plotData:', args.plotData)
+	print('recordName:', args.recordName)
 
 
 	pp = pprint.PrettyPrinter(indent=4)
@@ -174,5 +181,7 @@ if __name__ == '__main__':
 
 	closeDevice(fd)
 
+	saveLatencyResults(args.recordName, results)
+
 	if (args.plotData):
-		plotLatencies(results['Latencies'])
+		plotLatencies3D(results['Latencies'])
