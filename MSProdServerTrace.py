@@ -21,7 +21,10 @@ class MSProdServerTrace(Trace):
     def loadTrace(self, filePath, timeOffset):
         names = ['Op', 'Time', 'PID', 'TID', 'IrpPtr', 'Offset', 'Size', 'ElapsedTime', 'Disk', 'IrpFlags', 'DiskSvcTime', 'Prio', 'VolSnap', 'FileObj', 'FileName']
         usecols = ['Op', 'Time', 'Offset', 'Size', 'Disk']
-        df = pandas.read_csv(filePath, names=names, usecols=usecols, header='infer')
+        
+        dtype={"Op": str, "Time": str, 'Offset': str, 'Size': str, 'Disk': str}
+
+        df = pandas.read_csv(filePath, names=names, usecols=usecols, header='infer', dtype=dtype)
 
         df['Op'] = df['Op'].str.strip().replace('DiskRead', 'Read')
         df['Op'] = df['Op'].str.strip().replace('DiskWrite', 'Write')
@@ -58,7 +61,7 @@ class MSProdServerTrace(Trace):
         self.endTime = df['Time'].max() + timeOffset
         self.startTime = df['Time'].min() + timeOffset
 
-        print(df)
+        #print(df)
 
     def reset(self):
         self.ios = {}
