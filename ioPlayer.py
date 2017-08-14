@@ -86,6 +86,7 @@ def runTrace(fd, devSize, trace, disk, timeCompression, results):
 	#disks = trace.disks()
 	#for disk in disks:
 	
+	lastLBA = 0
 	dio = trace.diskIO(disk)
 	trace = dio['Trace']
 	scaleFactor = bytesToBlock(devSize) / dio['MaxLBA']
@@ -117,9 +118,11 @@ def runTrace(fd, devSize, trace, disk, timeCompression, results):
 
 		if(op == 'Read'):
 			latency = readFromDevice(fd, offset, size)
+			lastLBA = max(lastLBA, bytesToBlock(offset + size - 1))
 
 		elif(op == 'Write'):
 			latency = writeToDevice(fd, offset, size)
+			lastLBA = max(lastLBA, bytesToBlock(offset + size - 1))
 		
 		elif(op == 'Flush'):
 			latency = flushDevice(fd)
@@ -128,6 +131,7 @@ def runTrace(fd, devSize, trace, disk, timeCompression, results):
 		df = pandas.DataFrame([latencyResult], columns=['Op', 'Offset', 'Size', 'Latency'])
 		results['Latencies'] = results['Latencies'].append(df, ignore_index=True)
 
+	print('lastLBA: ', lastLBA)
 
 def openDevice(path):
 	#fd = os.open(path, os.O_RDWR|os.O_SYNC)
