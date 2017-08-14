@@ -89,6 +89,8 @@ def runTrace(fd, devSize, trace, disk, timeCompression, results):
 	dio = trace.diskIO(disk)
 	trace = dio['Trace']
 	scaleFactor = bytesToBlock(devSize) / dio['MaxLBA']
+	if(scaleFactor >= 1):
+		scaleFactor = 1
 
 	runStartTime = datetime.datetime.now()
 
