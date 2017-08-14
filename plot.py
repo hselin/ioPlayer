@@ -62,7 +62,7 @@ def plotDiff3D(latencyDiffRecords):
 	print('# of positives: ', len(zp), len(zp) / (len(zp) + len(zn)))
 	print('# of negatives: ', len(zn), len(zn) / (len(zp) + len(zn)))
 
-
+	return
 
 	fig = plt.figure()
 	ax = Axes3D(fig)
