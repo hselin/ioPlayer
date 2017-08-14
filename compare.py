@@ -10,7 +10,7 @@ import sys
 from plot import plotDiff3D
 
 DEFAULT_TRACE_RESULT = 'out.csv'
-DEFAULT_TRACE_CUTOFF = 500000
+DEFAULT_TRACE_CUTOFF = 999999999999
 
 class MyParser(argparse.ArgumentParser): 
 	def error(self, message):
@@ -53,11 +53,35 @@ if __name__ == '__main__':
 	r1 = r1.head(args.traceCutoff)
 	r2 = r2.head(args.traceCutoff)
 
+
+	r1['Latency'] = r1['Latency'] / r1['Size']
+	r2['Latency'] = r2['Latency'] / r2['Size']
+
+
 	print(r1.shape)
 	print(r2.shape)
 
-
 	assert (r1.shape == r2.shape)
+
+
+	print(args.traceResult1, 'mean: ', r1['Latency'].mean(), 'medium', r1['Latency'].median())
+	print(args.traceResult1, '05%: ', r1['Latency'].quantile(0.05))
+	print(args.traceResult1, '20%: ', r1['Latency'].quantile(0.20))
+	print(args.traceResult1, '50%: ', r1['Latency'].quantile(0.50))
+	print(args.traceResult1, '80%: ', r1['Latency'].quantile(0.80))
+	print(args.traceResult1, '95%: ', r1['Latency'].quantile(0.95))
+	print(args.traceResult1, '99%: ', r1['Latency'].quantile(0.99))
+	print(args.traceResult1, 'sum:', r1['Latency'].sum())
+
+	print(args.traceResult2, 'mean: ', r2['Latency'].mean(), 'medium', r2['Latency'].median())
+	print(args.traceResult2, '05%: ', r2['Latency'].quantile(0.05))
+	print(args.traceResult2, '20%: ', r2['Latency'].quantile(0.20))
+	print(args.traceResult2, '50%: ', r2['Latency'].quantile(0.50))
+	print(args.traceResult2, '80%: ', r2['Latency'].quantile(0.80))
+	print(args.traceResult2, '95%: ', r2['Latency'].quantile(0.95))
+	print(args.traceResult2, '99%: ', r2['Latency'].quantile(0.99))
+	print(args.traceResult2, 'sum:', r2['Latency'].sum())
+
 
 	diff = pandas.DataFrame()
 	diff['Op'] = r1['Op']
