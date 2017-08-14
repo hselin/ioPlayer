@@ -1,6 +1,9 @@
+import matplotlib
+#matplotlib.use('GTKAgg')
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
+
 
 
 def plotLatencies(latencyRecords):
@@ -36,6 +39,36 @@ def plotLatencies3D(latencyRecords):
 
 	ax.scatter(xr, yr, zr, c='b', marker='o')
 	ax.scatter(xw, yw, zw, c='r', marker='o')
+
+
+	plt.xlabel('Offset (LBA)')
+	plt.ylabel('Size (blks)')
+	ax.set_zlabel('Latency (us)')
+
+	plt.show()
+
+def plotDiff3D(latencyDiffRecords):
+	positives = latencyDiffRecords[latencyDiffRecords['Latency'] >= 0]
+	negatives = latencyDiffRecords[latencyDiffRecords['Latency'] < 0]
+
+	xp = positives['Offset']
+	yp = positives['Size']
+	zp = positives['Latency']
+
+	xn = negatives['Offset']
+	yn = negatives['Size']
+	zn = negatives['Latency']
+
+	print('# of positives: ', len(zp), len(zp) / (len(zp) + len(zn)))
+	print('# of negatives: ', len(zn), len(zn) / (len(zp) + len(zn)))
+
+
+
+	fig = plt.figure()
+	ax = Axes3D(fig)
+
+	ax.scatter(xp, yp, zp, c='b', marker='o')
+	ax.scatter(xn, yn, zn, c='r', marker='o')
 
 
 	plt.xlabel('Offset (LBA)')
