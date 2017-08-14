@@ -73,5 +73,7 @@ class MSProdServerTrace(Trace):
         return self.ios.keys()
 
     def diskIO(self, disk):
+        if(self.ios.get(disk) == None):
+            return None
         return self.ios[disk]
 
