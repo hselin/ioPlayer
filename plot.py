@@ -48,8 +48,8 @@ def plotLatencies3D(latencyRecords):
 	plt.show()
 
 def plotDiff3D(latencyDiffRecords):
-	positives = latencyDiffRecords[latencyDiffRecords['Latency'] >= -100]
-	negatives = latencyDiffRecords[latencyDiffRecords['Latency'] < -100]
+	positives = latencyDiffRecords[latencyDiffRecords['Latency'] >= -10]
+	negatives = latencyDiffRecords[latencyDiffRecords['Latency'] < -10]
 
 	xp = positives['Offset']
 	yp = positives['Size']
