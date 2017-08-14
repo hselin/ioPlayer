@@ -50,12 +50,12 @@ if __name__ == '__main__':
 	r2 = loadTraceResult(args.traceResult2)
 
 
-	r1 = r1.head(args.traceCutoff)
-	r2 = r2.head(args.traceCutoff)
+	#r1 = r1.head(args.traceCutoff)
+	#r2 = r2.head(args.traceCutoff)
 
 
-	r1['Latency'] = r1['Latency'] / r1['Size']
-	r2['Latency'] = r2['Latency'] / r2['Size']
+	#r1['Latency'] = r1['Latency']
+	#r2['Latency'] = r2['Latency']
 
 
 	print(r1.shape)
@@ -72,6 +72,7 @@ if __name__ == '__main__':
 	print(args.traceResult1, '95%: ', r1['Latency'].quantile(0.95))
 	print(args.traceResult1, '99%: ', r1['Latency'].quantile(0.99))
 	print(args.traceResult1, 'sum:', r1['Latency'].sum())
+	print(args.traceResult1, 'size mean:', r1['Size'].mean())
 
 	print(args.traceResult2, 'mean: ', r2['Latency'].mean(), 'medium', r2['Latency'].median())
 	print(args.traceResult2, '05%: ', r2['Latency'].quantile(0.05))
@@ -81,6 +82,7 @@ if __name__ == '__main__':
 	print(args.traceResult2, '95%: ', r2['Latency'].quantile(0.95))
 	print(args.traceResult2, '99%: ', r2['Latency'].quantile(0.99))
 	print(args.traceResult2, 'sum:', r2['Latency'].sum())
+	print(args.traceResult2, 'size mean:', r2['Size'].mean())
 
 
 	diff = pandas.DataFrame()
@@ -90,6 +92,6 @@ if __name__ == '__main__':
 	diff['Latency'] = r1['Latency'].subtract(r2['Latency'])
 	
 
-	print(diff)
+	#print(diff)
 
 	plotDiff3D(diff)
