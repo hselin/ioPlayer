@@ -61,7 +61,7 @@ class MSProdServerTrace(Trace):
         self.endTime = df['Time'].max() + timeOffset
         self.startTime = df['Time'].min() + timeOffset
 
-        #print(df)
+        print(df.Disk.unique())
 
     def reset(self):
         self.ios = {}
