@@ -47,6 +47,8 @@ class MSProdServerTrace(Trace):
         df['Disk'] = df['Disk'].apply(lambda x: int(x))
         df['End'] = df['Offset'] + df['Size'] - 1
 
+        self.MaxLBA = 0
+
         for disk in df.Disk.unique():
             if(self.ios.get(disk) == None):
                 self.ios[disk] = {}
@@ -57,12 +59,15 @@ class MSProdServerTrace(Trace):
             self.ios[disk]['Trace'] = self.ios[disk]['Trace'].sort_values(['Time'], ascending=[True])
             maxLBA = self.ios[disk]['Trace']['End'].max() 
             self.ios[disk]['MaxLBA'] = max(self.ios[disk]['MaxLBA'], maxLBA)
+            self.MaxLBA = max(self.MaxLBA, self.ios[disk]['MaxLBA'])
+            print('MaxLBA for disk ', disk, ': ', self.ios[disk]['MaxLBA'])
 
         self.endTime = df['Time'].max() + timeOffset
         self.startTime = df['Time'].min() + timeOffset
 
-        print('MaxLBA: ', self.ios[disk]['MaxLBA'])
-        print(df.Disk.unique())
+        print('Disks: ', df.Disk.unique())
+        print('MaxLBA: ' , self.MaxLBA)
+        print('MaxLBA in GB: ' , self.MaxLBA * 512 /1024/1024/1024)
 
     def reset(self):
         self.ios = {}

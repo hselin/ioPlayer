@@ -95,6 +95,8 @@ def runTrace(fd, devSize, trace, disk, timeCompression, results):
 
 	runStartTime = datetime.datetime.now()
 
+	print('scaleFactor: ', scaleFactor)
+
 
 	print(trace.shape)
 
@@ -133,9 +135,11 @@ def runTrace(fd, devSize, trace, disk, timeCompression, results):
 
 	print('lastLBA: ', lastLBA)
 
-def openDevice(path):
-	#fd = os.open(path, os.O_RDWR|os.O_SYNC)
-	fd = os.open(path, os.O_RDWR)
+def openDevice(path, osync):
+	if osync:
+		fd = os.open(path, os.O_RDWR|os.O_SYNC)
+	else:
+		fd = os.open(path, os.O_RDWR)
 	assert(fd >= 1)
 	return fd
 
@@ -163,6 +167,7 @@ if __name__ == '__main__':
 	parser.add_argument("-tf", "--traceFilePath", help="trace file path", type=str, default=DEFAULT_TRACE_FILE_PATH, required=False)
 	parser.add_argument("-p", "--plotData", help="plot resulting data", action='store_true', required=False)
 	parser.add_argument("-r", "--recordName", help="record name", type=str, default=DEFAULT_RECORD_NAME, required=False)
+	parser.add_argument("-o", "--osync", help="plot resulting data", action='store_true', required=False)
 	
 	args = parser.parse_args()
 
@@ -173,11 +178,13 @@ if __name__ == '__main__':
 	print('traceFilePath:', args.traceFilePath)
 	print('plotData:', args.plotData)
 	print('recordName:', args.recordName)
+	print('osync:', args.osync)
+
 
 
 	pp = pprint.PrettyPrinter(indent=4)
 
-	fd = openDevice(args.devPath)
+	fd = openDevice(args.devPath, args.osync)
 
 	trace = MSProdServerTrace()
 	trace.loadTrace(args.traceFilePath, 0)
